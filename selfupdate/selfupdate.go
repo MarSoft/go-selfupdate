@@ -140,7 +140,7 @@ func (u *Updater) update() error {
 	}
 	defer old.Close()
 
-	err = u.fetchInfo()
+	err = u.FetchInfo()
 	if err != nil {
 		return err
 	}
@@ -182,7 +182,7 @@ func (u *Updater) update() error {
 	return nil
 }
 
-func (u *Updater) fetchInfo() error {
+func (u *Updater) FetchInfo() error {
 	r, err := u.fetch(u.ApiURL + url.QueryEscape(u.CmdName) + "/" + url.QueryEscape(plat) + ".json")
 	if err != nil {
 		return err
