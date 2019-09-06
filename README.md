@@ -14,9 +14,13 @@ Enable your Golang applications to self update.  Inspired by Chrome based on Her
 
 ## QuickStart
 
-### Install library and update/patch creation utility
+### Install library
 
-`go get -u github.com/sanbornm/go-selfupdate/...`
+`go get -u github.com/sanbornm/go-selfupdate/selfupdate`
+
+### Install update/patch creation utility
+
+`go get -u github.com/sanbornm/go-selfupdate/cmd/go-selfupdate`
 
 ### Enable your App to Self Update
 
@@ -32,6 +36,20 @@ Enable your Golang applications to self update.  Inspired by Chrome based on Her
 	if updater != nil {
 		go updater.BackgroundRun()
 	}
+
+### Fetch the version from update Info
+
+	var updater = &selfupdate.Updater{
+		CurrentVersion: version,
+		ApiURL:         "http://updates.yourdomain.com/",
+		BinURL:         "http://updates.yourdomain.com/",
+		DiffURL:        "http://updates.yourdomain.com/",
+		Dir:            "update/",
+		CmdName:        "myapp", // app name
+	}
+
+	updater.FetchInfo()
+	println(updater.Info.Version)
 
 ### Push Out and Update
 
