@@ -13,9 +13,7 @@ var updater = &selfupdate.Updater{
 	ApiURL:         "http://localhost:8080/", // The server hosting `$CmdName/$GOOS-$ARCH.json` which contains the checksum for the binary
 	BinURL:         "http://localhost:8080/", // The server hosting the zip file containing the binary application which is a fallback for the patch method
 	DiffURL:        "http://localhost:8080/", // The server hosting the binary patch diff for incremental updates
-	Dir:            "update/",                // The directory created by the app when run which stores the cktime file
 	CmdName:        "hello-updater",          // The app name which is appended to the ApiURL to look for an update
-	ForceCheck:     true,                     // For this example, always check for an update unless the version is "dev"
 }
 
 func main() {

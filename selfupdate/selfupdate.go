@@ -38,7 +38,6 @@ import (
 	"math/rand"
 	"net/url"
 	"os"
-	"path/filepath"
 	"runtime"
 	"time"
 
@@ -48,11 +47,8 @@ import (
 )
 
 const (
-	upcktimePath = "cktime"
-	plat         = runtime.GOOS + "-" + runtime.GOARCH
+	plat = runtime.GOOS + "-" + runtime.GOARCH
 )
-
-const devValidTime = 7 * 24 * time.Hour
 
 var ErrHashMismatch = errors.New("new file hash mismatch after patch")
 var up = update.New()
@@ -81,8 +77,6 @@ type Updater struct {
 	CmdName        string    // Command name is appended to the ApiURL like http://apiurl/CmdName/. This represents one binary.
 	BinURL         string    // Base URL for full binary downloads.
 	DiffURL        string    // Base URL for diff downloads.
-	Dir            string    // Directory to store selfupdate state.
-	ForceCheck     bool      // Check for update regardless of cktime timestamp
 	Requester      Requester //Optional parameter to override existing http request handler
 	Info           struct {
 		Version string
@@ -90,43 +84,24 @@ type Updater struct {
 	}
 }
 
-func (u *Updater) getExecRelativeDir(dir string) string {
-	filename, _ := osext.Executable()
-	path := filepath.Join(filepath.Dir(filename), dir)
-	return path
-}
-
 // BackgroundRun starts the update check and apply cycle.
 func (u *Updater) BackgroundRun() error {
-	if err := os.MkdirAll(u.getExecRelativeDir(u.Dir), 0777); err != nil {
+
+	if err := up.CanUpdate(); err != nil {
 		// fail
 		return err
 	}
-	if u.wantUpdate() {
-		if err := up.CanUpdate(); err != nil {
-			// fail
-			return err
-		}
-		//self, err := osext.Executable()
-		//if err != nil {
-		// fail update, couldn't figure out path to self
-		//return
-		//}
-		// TODO(bgentry): logger isn't on Windows. Replace w/ proper error reports.
-		if err := u.update(); err != nil {
-			return err
-		}
+	//self, err := osext.Executable()
+	//if err != nil {
+	// fail update, couldn't figure out path to self
+	//return
+	//}
+	// TODO(bgentry): logger isn't on Windows. Replace w/ proper error reports.
+	if err := u.update(); err != nil {
+		return err
 	}
-	return nil
-}
 
-func (u *Updater) wantUpdate() bool {
-	path := u.getExecRelativeDir(u.Dir + upcktimePath)
-	if u.CurrentVersion == "dev" || (!u.ForceCheck && readTime(path).After(time.Now())) {
-		return false
-	}
-	wait := 24*time.Hour + randDuration(24*time.Hour)
-	return writeTime(path, time.Now().Add(wait))
+	return nil
 }
 
 func (u *Updater) update() error {
