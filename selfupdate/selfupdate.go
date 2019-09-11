@@ -38,6 +38,7 @@ import (
 	"math/rand"
 	"net/url"
 	"os"
+	"path/filepath"
 	"runtime"
 	"time"
 
@@ -77,7 +78,8 @@ type Updater struct {
 	CmdName        string    // Command name is appended to the ApiURL like http://apiurl/CmdName/. This represents one binary.
 	BinURL         string    // Base URL for full binary downloads.
 	DiffURL        string    // Base URL for diff downloads.
-	Requester      Requester //Optional parameter to override existing http request handler
+	TargetBinPath  string    // Local binary path if the binary is not itself
+	Requester      Requester // Optional parameter to override existing http request handler
 	Info           struct {
 		Version string
 		Sha256  []byte
@@ -86,18 +88,37 @@ type Updater struct {
 
 // BackgroundRun starts the update check and apply cycle.
 func (u *Updater) BackgroundRun() error {
-
 	if err := up.CanUpdate(); err != nil {
-		// fail
 		return err
 	}
-	//self, err := osext.Executable()
-	//if err != nil {
-	// fail update, couldn't figure out path to self
-	//return
-	//}
-	// TODO(bgentry): logger isn't on Windows. Replace w/ proper error reports.
 	if err := u.update(); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (u *Updater) UpdateTargetBinary() error {
+	up.TargetPath = u.TargetBinPath
+	if err := up.CanUpdate(); err != nil {
+		return err
+	}
+
+	err := u.FetchInfo()
+	if err != nil {
+		return err
+	}
+
+	bin, err := u.fetchAndVerifyFullBin()
+	if err != nil {
+		return err
+	}
+
+	path, _ := os.Executable()
+	dir := filepath.Dir(path)
+
+	err = ioutil.WriteFile(dir+"/"+u.TargetBinPath, bin, os.ModePerm)
+	if err != nil {
 		return err
 	}
 
