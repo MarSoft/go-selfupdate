@@ -106,9 +106,6 @@ func (u *Updater) UpdateTargetBinary() error {
 	}
 
 	up.TargetPath = u.TargetBinPath
-	if err := up.CanUpdate(); err != nil {
-		return err
-	}
 
 	err := u.FetchInfo()
 	if err != nil {
