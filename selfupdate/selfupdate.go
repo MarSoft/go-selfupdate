@@ -47,7 +47,7 @@ import (
 	"gopkg.in/inconshreveable/go-update.v0"
 )
 
-const (
+var (
 	plat = runtime.GOOS + "-" + runtime.GOARCH
 )
 
@@ -98,7 +98,9 @@ func (u *Updater) BackgroundRun() error {
 	return nil
 }
 
-func (u *Updater) UpdateTargetBinary() error {
+func (u *Updater) UpdateTargetBinary(targetOS string, targetARCH string) error {
+	plat = targetOS + "-" + targetARCH
+
 	up.TargetPath = u.TargetBinPath
 	if err := up.CanUpdate(); err != nil {
 		return err
