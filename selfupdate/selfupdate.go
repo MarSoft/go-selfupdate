@@ -80,6 +80,8 @@ type Updater struct {
 	DiffURL        string    // Base URL for diff downloads.
 	TargetBinPath  string    // Local binary path if the binary is not itself
 	Requester      Requester // Optional parameter to override existing http request handler
+	Goos           string    // Binary OS
+	Goarch         string    // Binary Arch
 	Info           struct {
 		Version string
 		Sha256  []byte
@@ -98,8 +100,8 @@ func (u *Updater) BackgroundRun() error {
 	return nil
 }
 
-func (u *Updater) UpdateTargetBinary(targetOS string, targetARCH string) error {
-	plat = targetOS + "-" + targetARCH
+func (u *Updater) UpdateTargetBinary() error {
+	plat = u.Goos + "-" + u.Goarch
 
 	up.TargetPath = u.TargetBinPath
 	if err := up.CanUpdate(); err != nil {
