@@ -101,7 +101,9 @@ func (u *Updater) BackgroundRun() error {
 }
 
 func (u *Updater) UpdateTargetBinary() error {
-	plat = u.Goos + "-" + u.Goarch
+	if u.Goos != "" && u.Goarch != "" {
+		plat = u.Goos + "-" + u.Goarch
+	}
 
 	up.TargetPath = u.TargetBinPath
 	if err := up.CanUpdate(); err != nil {
@@ -183,6 +185,10 @@ func (u *Updater) update() error {
 }
 
 func (u *Updater) FetchInfo() error {
+	if u.Goos != "" && u.Goarch != "" {
+		plat = u.Goos + "-" + u.Goarch
+	}
+
 	r, err := u.fetch(u.ApiURL + url.QueryEscape(u.CmdName) + "/" + url.QueryEscape(plat) + ".json")
 	if err != nil {
 		return err
