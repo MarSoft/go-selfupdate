@@ -16,11 +16,11 @@ Enable your Golang applications to self update.  Inspired by Chrome based on Her
 
 ### Install library
 
-`go get -u github.com/sanbornm/go-selfupdate/selfupdate`
+`go get -u github.com/AaronFei/go-selfupdate/selfupdate`
 
 ### Install update/patch creation utility
 
-`go get -u github.com/sanbornm/go-selfupdate/cmd/go-selfupdate`
+`go get -u github.com/AaronFei/go-selfupdate/cmd/go-selfupdate`
 
 ### Enable your App to Self Update
 
