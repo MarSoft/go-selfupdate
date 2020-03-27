@@ -62,7 +62,6 @@ func createUpdater(mr *mockRequester) *Updater {
 		ApiURL:         "http://updates.yourdomain.com/",
 		BinURL:         "http://updates.yourdownmain.com/",
 		DiffURL:        "http://updates.yourdomain.com/",
-		Dir:            "update/",
 		CmdName:        "myapp", // app name
 		Requester:      mr,
 	}
@@ -74,7 +73,6 @@ func createUpdaterWithEscapedCharacters(mr *mockRequester) *Updater {
 		ApiURL:         "http://updates.yourdomain.com/",
 		BinURL:         "http://updates.yourdownmain.com/",
 		DiffURL:        "http://updates.yourdomain.com/",
-		Dir:            "update/",
 		CmdName:        "myapp+foo", // app name
 		Requester:      mr,
 	}

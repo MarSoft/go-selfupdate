@@ -16,11 +16,12 @@ import (
 	"github.com/kr/binarydist"
 )
 
-var version, genDir string
+var version, genDir, info string
 
 type current struct {
 	Version string
 	Sha256  []byte
+	Info    string
 }
 
 func generateSha256(path string) []byte {
@@ -60,7 +61,7 @@ func newGzReader(r io.ReadCloser) io.ReadCloser {
 }
 
 func createUpdate(path string, platform string) {
-	c := current{Version: version, Sha256: generateSha256(path)}
+	c := current{Version: version, Sha256: generateSha256(path), Info: info}
 
 	b, err := json.MarshalIndent(c, "", "    ")
 	if err != nil {
@@ -125,10 +126,10 @@ func createUpdate(path string, platform string) {
 }
 
 func printUsage() {
-	fmt.Println("")
+	fmt.Println("v1.0.0")
 	fmt.Println("Positional arguments:")
-	fmt.Println("\tSingle platform: go-selfupdate myapp 1.2")
-	fmt.Println("\tCross platform: go-selfupdate /tmp/mybinares/ 1.2")
+	fmt.Println("\tSingle platform: go-selfupdate myapp 1.2 \"update info\"")
+	fmt.Println("\tCross platform: go-selfupdate /tmp/mybinares/ 1.2 \"update info\"")
 }
 
 func createBuildDir() {
@@ -159,6 +160,7 @@ func main() {
 	platform := *platformFlag
 	appPath := flag.Arg(0)
 	version = flag.Arg(1)
+	info = flag.Arg(2)
 	genDir = *outputDirFlag
 
 	createBuildDir()
