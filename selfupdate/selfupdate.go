@@ -85,6 +85,7 @@ type Updater struct {
 	Info           struct {
 		Version string
 		Sha256  []byte
+		Info    string
 	}
 }
 
